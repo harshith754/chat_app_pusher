@@ -2,19 +2,25 @@ import { connectToDB } from "@/utils/database";
 import Room from "@/models/room";
 
 
-export const GET = async (request) => {
+export const POST = async (req) => {
+
+  const { userName } =await req.json();
 
   try {
     await connectToDB(); 
     
-    const newRoom = await Room.create({
-      messages: [] 
-      
+    const newRoom = new Room({
+      messages: [] ,
+      users: [
+        {
+          userName: userName , // Replace with the actual username
+        }
+      ]
     });
 
-    console.log(newRoom)
+    await newRoom.save()
 
-    return new Response(JSON.stringify(newRoom._id), { status: 200} )
+    return new Response(JSON.stringify(newRoom), { status: 200} )
     
   } catch (error) {
 

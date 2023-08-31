@@ -4,36 +4,99 @@ import { useState } from 'react';
 
 export default function Home() {
   const router= useRouter()
-  let roomIdInput='';
+
+  const [userName,setUserName] =useState("")
+
+  const [roomIdInput,setRoomIdInput] =useState("")
+
 
   const [creatingRoom,setCreatingRoom]=useState(false);
   const [joiningRoom,setJoiningRoom]=useState(false);
 
 
 
-  const createRoom = async () => {
-    setCreatingRoom(true)
-    const res = await fetch('/api/rooms/create')
+  const createRoom = async (e) => {
+    e.preventDefault();
 
-    const roomID= await res.json();
+    if(userName===""){
+      alert("Username cannot be empty!!")
+      return
+    }
 
-    console.log(roomID)
+    setCreatingRoom(true);
+    try{
+      const response = await fetch('/api/rooms/create',{
+        method: 'POST',
+        body: JSON.stringify({
+          userName:userName
+        })
+      })
 
-    router.push(`/room/${roomID}`)
-    setCreatingRoom(false)
+      console.log(response);
 
+      if(response.ok) {
+        const newRoom = await response.json();
+        console.log(newRoom._id)
+        router.push(`/room/${newRoom._id}`)
+      }
 
+    } catch(error) {
+      console.log(error)
+    } finally {
+      setCreatingRoom(false)
+    }
   }
+    
 
-  const joinRoom = async () => {
+  const joinRoom = async (e) => {
+
+    e.preventDefault();
+
+    if(userName===""){
+      alert("Username cannot be empty!!")
+      return
+    }
+
     setJoiningRoom(true)
-    router.push(`/room/${roomIdInput}`)
+
+    try{
+      const response = await fetch('/api/rooms/addUser',{
+        method: 'POST',
+        body: JSON.stringify({
+          userName:userName,
+          roomId:roomIdInput
+        })
+      })
+
+      console.log(response);
+
+      if(response.ok) {
+        const newRoom = await response.json();
+        console.log(newRoom._id)
+        router.push(`/room/${newRoom._id}`)
+      }
+
+    } catch(error) {
+      console.log(error)
+    } finally {
+      setCreatingRoom(false)
+    }
+
     setJoiningRoom(false)
 
   }
 
   return (
     <main className="w-full flex flex-col justify-center items-center font-xl">
+
+      <input type='text' className="border
+            border-black mt-8 mb-3 rounded-md p-4 text-center" placeholder="Enter user name"
+            onChange={({ target }) => (setUserName( target.value) )}
+            value={userName}
+
+      >
+      </input>
+
       <button 
         className="border bg-blue-400 border-blue-200 p-3 px-5 rounded-md text-white"
         onClick={createRoom}
@@ -43,8 +106,8 @@ export default function Home() {
 
       <input type='text' className="border
       border-black mt-8 mb-3 rounded-md p-4 text-center" placeholder="roomID"
-      onChange={({ target }) => (roomIdInput = target.value)}
-
+      onChange={({ target }) => (setRoomIdInput( target.value) )}
+      value={roomIdInput}
       >
       </input>
       <button 
