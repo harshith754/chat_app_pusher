@@ -18,6 +18,9 @@ const Chats =  ( {roomId, existingMessages} ) => {
 
     return () => {
       pusherClient.unsubscribe(roomId)
+      pusherClient.unbind('incoming-message', (text) => {
+        setIncomingMessages((prev) => [...prev, text])
+      })
     }
   }, [])
 
