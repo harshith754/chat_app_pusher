@@ -1,7 +1,7 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'Next Chat App',
+  title: 'Chat App Pusher',
   description: 'Chat app using pusher',
 }
 

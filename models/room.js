@@ -6,7 +6,8 @@ const RoomSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref:'Message',
   }],
-  
+},{
+  timestamps: true,
 });
 
 const Room = models.Room ||  model("Room", RoomSchema);
