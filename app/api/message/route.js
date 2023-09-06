@@ -10,7 +10,7 @@ export async function POST(req) {
   try{
     
 
-    pusherServer.trigger(roomId, 'incoming-message', text)
+   await pusherServer.trigger(roomId, 'incoming-message', text)
   }
   catch(e){
     return new Response(e.message, { status: 500} )
